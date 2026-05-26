@@ -1,0 +1,509 @@
+<?xml version="1.0" ?>
+<!-- Generated using onshape-to-robot -->
+<!-- Onshape document_id: ea8bc0bd07d35a7ef58eef6b -->
+<robot name="tetrabot">
+  <!-- Link base_link -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0.025787 -0.000348468 0.0673611" rpy="0 0 0"/>
+      <mass value="16.1488"/>
+      <inertia ixx="0.0959047" ixy="-0.000829231" ixz="-0.0172466" iyy="0.109975" iyz="0.000180341" izz="0.120294"/>
+    </inertial>
+    <!-- Part base_link -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/base_link.stl"/>
+      </geometry>
+      <material name="base_link_material">
+        <color rgba="0.0470588 0.470588 0.435294 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/base_link.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Link llanta_dere_del -->
+  <link name="llanta_dere_del">
+    <inertial>
+      <origin xyz="-0 -0 -0.0264625" rpy="0 0 0"/>
+      <mass value="0.324568"/>
+      <inertia ixx="0.00010149" ixy="0" ixz="0" iyy="0.000102087" iyz="0" izz="0.000172547"/>
+    </inertial>
+    <!-- Part llanta_dere_del -->
+    <visual>
+      <origin xyz="0 0 -0.015" rpy="1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/llanta_dere_del.stl"/>
+      </geometry>
+      <material name="llanta_dere_del_material">
+        <color rgba="0.980392 0.713725 0.00392157 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.015" rpy="1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/llanta_dere_del.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to llanta_dere_del -->
+  <joint name="llanta_dere_del" type="revolute">
+    <origin xyz="0.0441 -0.095 0.0162" rpy="-1.5708 -0 0"/>
+    <parent link="base_link"/>
+    <child link="llanta_dere_del"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+  <!-- Link llanta_dere_tra -->
+  <link name="llanta_dere_tra">
+    <inertial>
+      <origin xyz="0 -0 -0.0264625" rpy="0 0 0"/>
+      <mass value="0.324568"/>
+      <inertia ixx="0.00010149" ixy="0" ixz="0" iyy="0.000102087" iyz="0" izz="0.000172547"/>
+    </inertial>
+    <!-- Part llanta_dere_tra -->
+    <visual>
+      <origin xyz="0 0 -0.015" rpy="1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/llanta_dere_tra.stl"/>
+      </geometry>
+      <material name="llanta_dere_tra_material">
+        <color rgba="0.980392 0.713725 0.00392157 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.015" rpy="1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/llanta_dere_tra.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to llanta_dere_tra -->
+  <joint name="llanta_dere_tra" type="revolute">
+    <origin xyz="-0.0859 -0.095 0.0162" rpy="-1.5708 -0 0"/>
+    <parent link="base_link"/>
+    <child link="llanta_dere_tra"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+  <!-- Link llanta_iz_del -->
+  <link name="llanta_iz_del">
+    <inertial>
+      <origin xyz="-0 0 -0.0264625" rpy="0 0 0"/>
+      <mass value="0.324568"/>
+      <inertia ixx="0.000101332" ixy="0" ixz="0" iyy="0.000102245" iyz="0" izz="0.000172547"/>
+    </inertial>
+    <!-- Part llanta_iz_del -->
+    <visual>
+      <origin xyz="-0 0 -0.04169" rpy="-1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/llanta_iz_del.stl"/>
+      </geometry>
+      <material name="llanta_iz_del_material">
+        <color rgba="0.980392 0.713725 0.00392157 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0 0 -0.04169" rpy="-1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/llanta_iz_del.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to llanta_iz_del -->
+  <joint name="llanta_iz_del" type="revolute">
+    <origin xyz="0.0441 0.095 0.0162" rpy="1.5708 -0 0"/>
+    <parent link="base_link"/>
+    <child link="llanta_iz_del"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+  <!-- Link llanta_iz_tra -->
+  <link name="llanta_iz_tra">
+    <inertial>
+      <origin xyz="0 -0 -0.0264625" rpy="0 0 0"/>
+      <mass value="0.324568"/>
+      <inertia ixx="0.000101332" ixy="0" ixz="0" iyy="0.000102245" iyz="0" izz="0.000172547"/>
+    </inertial>
+    <!-- Part llanta_iz_tra -->
+    <visual>
+      <origin xyz="0 -0 -0.04169" rpy="-1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/llanta_iz_tra.stl"/>
+      </geometry>
+      <material name="llanta_iz_tra_material">
+        <color rgba="0.980392 0.713725 0.00392157 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 -0 -0.04169" rpy="-1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/llanta_iz_tra.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to llanta_iz_tra -->
+  <joint name="llanta_iz_tra" type="revolute">
+    <origin xyz="-0.0859 0.095 0.0162" rpy="1.5708 -0 0"/>
+    <parent link="base_link"/>
+    <child link="llanta_iz_tra"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+  <!-- Link camara_t_s -->
+  <link name="camara_t_s">
+    <inertial>
+      <origin xyz="-0 0 -0.00516528" rpy="0 0 0"/>
+      <mass value="0.0399941"/>
+      <inertia ixx="6.59521e-06" ixy="0" ixz="0" iyy="6.59521e-06" iyz="0" izz="1.04207e-05"/>
+    </inertial>
+    <!-- Part camara_t_s -->
+    <visual>
+      <origin xyz="0 0 0.005" rpy="3.14159 -0 1.5708"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/camara_t_s.stl"/>
+      </geometry>
+      <material name="camara_t_s_material">
+        <color rgba="0.262745 0.282353 0.301961 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.005" rpy="3.14159 -0 1.5708"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/camara_t_s.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to camara_t_s -->
+  <joint name="camara" type="fixed">
+    <origin xyz="0.115 0 0.135" rpy="-1.5708 -0 1.5708"/>
+    <parent link="base_link"/>
+    <child link="camara_t_s"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <!-- Link lidar_link -->
+  <link name="lidar_link">
+    <inertial>
+      <origin xyz="-0 0 -0.00994579" rpy="0 0 0"/>
+      <mass value="0.0591873"/>
+      <inertia ixx="1.18545e-05" ixy="0" ixz="0" iyy="1.18545e-05" iyz="0" izz="1.49382e-05"/>
+    </inertial>
+    <!-- Part lidar_link -->
+    <visual>
+      <origin xyz="0 0 0.005" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/lidar_link.stl"/>
+      </geometry>
+      <material name="lidar_link_material">
+        <color rgba="0.972549 0.529412 0.00392157 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.005" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/lidar_link.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to lidar_link -->
+  <joint name="lidar" type="fixed">
+    <origin xyz="0.08 0 0.18" rpy="3.14159 -0 0"/>
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <!-- Link faro_t_s -->
+  <link name="faro_t_s">
+    <inertial>
+      <origin xyz="0 0 -0.000135915" rpy="0 0 0"/>
+      <mass value="0.00334875"/>
+      <inertia ixx="2.12684e-07" ixy="0" ixz="0" iyy="2.12684e-07" iyz="0" izz="2.18622e-07"/>
+    </inertial>
+    <!-- Part faro_t_s -->
+    <visual>
+      <origin xyz="0 0 0.01" rpy="3.14159 -0 1.5708"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/faro_t_s.stl"/>
+      </geometry>
+      <material name="faro_t_s_material">
+        <color rgba="1 0.756863 0.054902 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.01" rpy="3.14159 -0 1.5708"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/faro_t_s.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to faro_t_s -->
+  <joint name="faro_delantero" type="fixed">
+    <origin xyz="0.12 0 0.06" rpy="-1.5708 -0 1.5708"/>
+    <parent link="base_link"/>
+    <child link="faro_t_s"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <!-- Link faro_t_f -->
+  <link name="faro_t_f">
+    <inertial>
+      <origin xyz="0 -0 -0.0169945" rpy="0 0 0"/>
+      <mass value="0.00577249"/>
+      <inertia ixx="4.04912e-07" ixy="0" ixz="0" iyy="4.04912e-07" iyz="0" izz="1.63495e-07"/>
+    </inertial>
+    <!-- Part faro_t_f -->
+    <visual>
+      <origin xyz="0 0 -0.01" rpy="-3.14159 1.5708 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/faro_t_f.stl"/>
+      </geometry>
+      <material name="faro_t_f_material">
+        <color rgba="0.972549 0.529412 0.00392157 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.01" rpy="-3.14159 1.5708 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/faro_t_f.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to faro_t_f -->
+  <joint name="faro_trasero" type="fixed">
+    <origin xyz="-0.12 -0 0.1125" rpy="3.14159 -0 0"/>
+    <parent link="base_link"/>
+    <child link="faro_t_f"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <!-- Link ultra_t -->
+  <link name="ultra_t">
+    <inertial>
+      <origin xyz="0 -0 -0.000440421" rpy="0 0 0"/>
+      <mass value="0.00553386"/>
+      <inertia ixx="1.95866e-07" ixy="-2.0051e-08" ixz="0" iyy="8.62187e-07" iyz="0" izz="1.02423e-06"/>
+    </inertial>
+    <!-- Part ultra_t -->
+    <visual>
+      <origin xyz="0 -0 0.0025" rpy="1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/ultra_t.stl"/>
+      </geometry>
+      <material name="ultra_t_material">
+        <color rgba="0.0862745 0.321569 0.580392 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 -0 0.0025" rpy="1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/ultra_t.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to ultra_t -->
+  <joint name="ultrasonico_dere" type="fixed">
+    <origin xyz="0 -0.1025 0.085" rpy="-1.5708 -0 0"/>
+    <parent link="base_link"/>
+    <child link="ultra_t"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <!-- Link ultra_t_2 -->
+  <link name="ultra_t_2">
+    <inertial>
+      <origin xyz="0 0 -0.000440421" rpy="0 0 0"/>
+      <mass value="0.00553386"/>
+      <inertia ixx="1.95866e-07" ixy="-2.0051e-08" ixz="0" iyy="8.62187e-07" iyz="0" izz="1.02423e-06"/>
+    </inertial>
+    <!-- Part ultra_t_2 -->
+    <visual>
+      <origin xyz="0 0 0.0025" rpy="1.5708 0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/ultra_t.stl"/>
+      </geometry>
+      <material name="ultra_t_2_material">
+        <color rgba="0.0862745 0.321569 0.580392 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.0025" rpy="1.5708 0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/ultra_t.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to ultra_t_2 -->
+  <joint name="ultrasonico_der_dia" type="fixed">
+    <origin xyz="0.0901178 -0.0801178 0.085" rpy="-1.5708 -0 0.785398"/>
+    <parent link="base_link"/>
+    <child link="ultra_t_2"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <!-- Link ultra_t_3 -->
+  <link name="ultra_t_3">
+    <inertial>
+      <origin xyz="0 -0 -0.000440421" rpy="0 0 0"/>
+      <mass value="0.00553386"/>
+      <inertia ixx="1.95866e-07" ixy="-2.0051e-08" ixz="0" iyy="8.62187e-07" iyz="0" izz="1.02423e-06"/>
+    </inertial>
+    <!-- Part ultra_t_3 -->
+    <visual>
+      <origin xyz="0 0 0.0025" rpy="1.5708 -0 3.14159"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/ultra_t.stl"/>
+      </geometry>
+      <material name="ultra_t_3_material">
+        <color rgba="0.0862745 0.321569 0.580392 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.0025" rpy="1.5708 -0 3.14159"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/ultra_t.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to ultra_t_3 -->
+  <joint name="ultrasonico_iz_dia" type="fixed">
+    <origin xyz="0.0901178 0.0801178 0.085" rpy="1.5708 -0 -0.785398"/>
+    <parent link="base_link"/>
+    <child link="ultra_t_3"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <!-- Link ultra_t_4 -->
+  <link name="ultra_t_4">
+    <inertial>
+      <origin xyz="-0 -0 -0.000440421" rpy="0 0 0"/>
+      <mass value="0.00553386"/>
+      <inertia ixx="1.95866e-07" ixy="-2.0051e-08" ixz="0" iyy="8.62187e-07" iyz="0" izz="1.02423e-06"/>
+    </inertial>
+    <!-- Part ultra_t_4 -->
+    <visual>
+      <origin xyz="-0 0 0.0025" rpy="1.5708 -0 3.14159"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/ultra_t.stl"/>
+      </geometry>
+      <material name="ultra_t_4_material">
+        <color rgba="0.0862745 0.321569 0.580392 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0 0 0.0025" rpy="1.5708 -0 3.14159"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/ultra_t.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to ultra_t_4 -->
+  <joint name="ultrasonico_iz" type="fixed">
+    <origin xyz="-0 0.1025 0.085" rpy="1.5708 -0 0"/>
+    <parent link="base_link"/>
+    <child link="ultra_t_4"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <!-- Link ultra_t_5 -->
+  <link name="ultra_t_5">
+    <inertial>
+      <origin xyz="-0 -0 -0.000440421" rpy="0 0 0"/>
+      <mass value="0.00553386"/>
+      <inertia ixx="1.95866e-07" ixy="-2.0051e-08" ixz="0" iyy="8.62187e-07" iyz="0" izz="1.02423e-06"/>
+    </inertial>
+    <!-- Part ultra_t_5 -->
+    <visual>
+      <origin xyz="0 0 0.0025" rpy="1.5708 -0 3.14159"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/ultra_t.stl"/>
+      </geometry>
+      <material name="ultra_t_5_material">
+        <color rgba="0.0862745 0.321569 0.580392 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.0025" rpy="1.5708 -0 3.14159"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/ultra_t.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to ultra_t_5 -->
+  <joint name="ultrasonico_tra" type="fixed">
+    <origin xyz="-0.1125 0 0.04125" rpy="1.5708 -0 1.5708"/>
+    <parent link="base_link"/>
+    <child link="ultra_t_5"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <!-- Link antena_t_s -->
+  <link name="antena_t_s">
+    <inertial>
+      <origin xyz="-0 -0 -0.0269" rpy="0 0 0"/>
+      <mass value="0.00954851"/>
+      <inertia ixx="1.73735e-06" ixy="0" ixz="0" iyy="1.73735e-06" iyz="0" izz="2.49144e-07"/>
+    </inertial>
+    <!-- Part antena_t_s -->
+    <visual>
+      <origin xyz="0 0 -0.01" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/antena_t_s.stl"/>
+      </geometry>
+      <material name="antena_t_s_material">
+        <color rgba="0.301961 0.301961 0.301961 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.01" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/antena_t_s.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to antena_t_s -->
+  <joint name="antena" type="fixed">
+    <origin xyz="-0.12 -0.09 0.1125" rpy="3.14159 -0 0"/>
+    <parent link="base_link"/>
+    <child link="antena_t_s"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+  <!-- Link tapa_tf -->
+  <link name="tapa_tf">
+    <inertial>
+      <origin xyz="0.0624677 0.0898976 -0.00749878" rpy="0 0 0"/>
+      <mass value="0.181117"/>
+      <inertia ixx="0.000603698" ixy="7.226e-09" ixz="1.3799e-08" iyy="0.000317805" iyz="1.9858e-08" izz="0.000920747"/>
+    </inertial>
+    <!-- Part tapa_tf -->
+    <visual>
+      <origin xyz="0.1 0.09 -0.005" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/tapa_tf.stl"/>
+      </geometry>
+      <material name="tapa_tf_material">
+        <color rgba="0.941176 0.87451 0.678431 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.1 0.09 -0.005" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/assets/tapa_tf.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from base_link to tapa_tf -->
+  <joint name="tapa" type="fixed">
+    <origin xyz="-0.1 0.09 0.16" rpy="3.14159 -0 0"/>
+    <parent link="base_link"/>
+    <child link="tapa_tf"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" velocity="100"/>
+  </joint>
+</robot>

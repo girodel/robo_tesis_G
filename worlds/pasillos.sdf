@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='utf-8'?>
+<sdf version='1.9'>
+  <world name='pasillo_hospital_world'>
+    <!-- PLUGINS BASE DE FÍSICAS -->
+    <physics name='1ms' type='ignored'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <plugin name='gz::sim::systems::Physics' filename='ignition-gazebo-physics-system'/>
+    <plugin name='gz::sim::systems::UserCommands' filename='ignition-gazebo-user-commands-system'/>
+    <plugin name='gz::sim::systems::SceneBroadcaster' filename='ignition-gazebo-scene-broadcaster-system'/>
+    <plugin name='gz::sim::systems::Contact' filename='ignition-gazebo-contact-system'/>
+    <gravity>0 0 -9.8</gravity>
+    
+    <scene>
+      <ambient>0.6 0.6 0.6 1</ambient>
+      <background>0.8 0.8 0.8 1</background>
+      <shadows>true</shadows>
+    </scene>
+
+    <!-- LUZ -->
+    <light name='sun' type='directional'>
+      <pose>0 0 10 0 0 0</pose>
+      <cast_shadows>true</cast_shadows>
+      <direction>-0.5 0.2 -0.9</direction>
+      <diffuse>0.9 0.9 0.9 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+    </light>
+
+    <!-- SUELO -->
+    <model name='ground_plane'>
+      <static>true</static>
+      <link name='link'>
+        <collision name='collision'><geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry></collision>
+        <visual name='visual'>
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material><ambient>0.85 0.85 0.85 1</ambient><diffuse>0.85 0.85 0.85 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ESTRUCTURA DEL EDIFICIO: 3 Cuartos Coloridos + 1 Pasillo -->
+    <model name='building_structure'>
+      <static>true</static>
+      <link name='walls'>
+        
+        <!-- ================= PASILLO CENTRAL (BLANCO NEUTRO) ================= -->
+        <!-- Pared inferior del pasillo -->
+        <visual name='ext_front'><pose>0 -2 1 0 0 0</pose><geometry><box><size>18 0.2 2</size></box></geometry><material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse></material></visual>
+        <collision name='cext_front'><pose>0 -2 1 0 0 0</pose><geometry><box><size>18 0.2 2</size></box></geometry></collision>
+        
+        <!-- Tapas laterales del pasillo -->
+        <visual name='hall_left'><pose>-9 -1 1 0 0 1.5708</pose><geometry><box><size>2 0.2 2</size></box></geometry><material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse></material></visual>
+        <collision name='chall_left'><pose>-9 -1 1 0 0 1.5708</pose><geometry><box><size>2 0.2 2</size></box></geometry></collision>
+        <visual name='hall_right'><pose>9 -1 1 0 0 1.5708</pose><geometry><box><size>2 0.2 2</size></box></geometry><material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse></material></visual>
+        <collision name='chall_right'><pose>9 -1 1 0 0 1.5708</pose><geometry><box><size>2 0.2 2</size></box></geometry></collision>
+
+        <!-- ================= CUARTO 1 (IZQUIERDA - AZUL) ================= -->
+        <visual name='r1_back'><pose>-6 6 1 0 0 0</pose><geometry><box><size>6 0.2 2</size></box></geometry><material><ambient>0.2 0.4 0.8 1</ambient><diffuse>0.2 0.4 0.8 1</diffuse></material></visual>
+        <collision name='cr1_back'><pose>-6 6 1 0 0 0</pose><geometry><box><size>6 0.2 2</size></box></geometry></collision>
+        
+        <visual name='r1_left'><pose>-9 3 1 0 0 1.5708</pose><geometry><box><size>6 0.2 2</size></box></geometry><material><ambient>0.2 0.4 0.8 1</ambient><diffuse>0.2 0.4 0.8 1</diffuse></material></visual>
+        <collision name='cr1_left'><pose>-9 3 1 0 0 1.5708</pose><geometry><box><size>6 0.2 2</size></box></geometry></collision>
+
+        <visual name='r1_front'><pose>-7 0 1 0 0 0</pose><geometry><box><size>4 0.2 2</size></box></geometry><material><ambient>0.2 0.4 0.8 1</ambient><diffuse>0.2 0.4 0.8 1</diffuse></material></visual>
+        <collision name='cr1_front'><pose>-7 0 1 0 0 0</pose><geometry><box><size>4 0.2 2</size></box></geometry></collision>
+
+        <!-- ================= CUARTO 2 (CENTRO - VERDE) ================= -->
+        <visual name='r2_back'><pose>0 6 1 0 0 0</pose><geometry><box><size>6 0.2 2</size></box></geometry><material><ambient>0.2 0.7 0.3 1</ambient><diffuse>0.2 0.7 0.3 1</diffuse></material></visual>
+        <collision name='cr2_back'><pose>0 6 1 0 0 0</pose><geometry><box><size>6 0.2 2</size></box></geometry></collision>
+        
+        <!-- Pared divisoria entre Cuarto 1 y 2 -->
+        <visual name='r2_left'><pose>-3 3 1 0 0 1.5708</pose><geometry><box><size>6 0.2 2</size></box></geometry><material><ambient>0.2 0.7 0.3 1</ambient><diffuse>0.2 0.7 0.3 1</diffuse></material></visual>
+        <collision name='cr2_left'><pose>-3 3 1 0 0 1.5708</pose><geometry><box><size>6 0.2 2</size></box></geometry></collision>
+
+        <visual name='r2_front'><pose>-1 0 1 0 0 0</pose><geometry><box><size>4 0.2 2</size></box></geometry><material><ambient>0.2 0.7 0.3 1</ambient><diffuse>0.2 0.7 0.3 1</diffuse></material></visual>
+        <collision name='cr2_front'><pose>-1 0 1 0 0 0</pose><geometry><box><size>4 0.2 2</size></box></geometry></collision>
+
+        <!-- ================= CUARTO 3 (DERECHA - NARANJA) ================= -->
+        <visual name='r3_back'><pose>6 6 1 0 0 0</pose><geometry><box><size>6 0.2 2</size></box></geometry><material><ambient>0.9 0.5 0.1 1</ambient><diffuse>0.9 0.5 0.1 1</diffuse></material></visual>
+        <collision name='cr3_back'><pose>6 6 1 0 0 0</pose><geometry><box><size>6 0.2 2</size></box></geometry></collision>
+        
+        <!-- Pared divisoria entre Cuarto 2 y 3 -->
+        <visual name='r3_left'><pose>3 3 1 0 0 1.5708</pose><geometry><box><size>6 0.2 2</size></box></geometry><material><ambient>0.9 0.5 0.1 1</ambient><diffuse>0.9 0.5 0.1 1</diffuse></material></visual>
+        <collision name='cr3_left'><pose>3 3 1 0 0 1.5708</pose><geometry><box><size>6 0.2 2</size></box></geometry></collision>
+
+        <visual name='r3_right'><pose>9 3 1 0 0 1.5708</pose><geometry><box><size>6 0.2 2</size></box></geometry><material><ambient>0.9 0.5 0.1 1</ambient><diffuse>0.9 0.5 0.1 1</diffuse></material></visual>
+        <collision name='cr3_right'><pose>9 3 1 0 0 1.5708</pose><geometry><box><size>6 0.2 2</size></box></geometry></collision>
+
+        <visual name='r3_front'><pose>5 0 1 0 0 0</pose><geometry><box><size>4 0.2 2</size></box></geometry><material><ambient>0.9 0.5 0.1 1</ambient><diffuse>0.9 0.5 0.1 1</diffuse></material></visual>
+        <collision name='cr3_front'><pose>5 0 1 0 0 0</pose><geometry><box><size>4 0.2 2</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <!-- OBSTÁCULOS EN CUARTO 1 (Azul) -->
+    <model name='room1_items'>
+      <static>true</static>
+      <link name='r1_link'>
+        <visual name='ot1'><pose>-6 3 0.45 0 0 0</pose><geometry><box><size>2.2 0.8 0.9</size></box></geometry><material><ambient>0.8 0.9 0.9 1</ambient><diffuse>0.8 0.9 0.9 1</diffuse></material></visual>
+        <collision name='cot1'><pose>-6 3 0.45 0 0 0</pose><geometry><box><size>2.2 0.8 0.9</size></box></geometry></collision>
+        <visual name='bc1_s'><pose>-8 4.5 0.25 0 0 0</pose><geometry><box><size>0.5 0.5 0.5</size></box></geometry><material><ambient>0.4 0.2 0 1</ambient><diffuse>0.4 0.2 0 1</diffuse></material></visual>
+        <collision name='cbc1'><pose>-8 4.5 0.25 0 0 0</pose><geometry><box><size>0.5 0.5 0.5</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <!-- OBSTÁCULOS EN CUARTO 2 (Verde) -->
+    <model name='room2_items'>
+      <static>true</static>
+      <link name='r2_link'>
+        <visual name='s1_top'><pose>0.5 3 0.4 0 0 0</pose><geometry><box><size>3 1 0.05</size></box></geometry><material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material></visual>
+        <collision name='cs1'><pose>0.5 3 0.4 0 0 0</pose><geometry><box><size>3 1 0.05</size></box></geometry></collision>
+        <visual name='b1'><pose>1.5 3 0.675 0 0 0</pose><geometry><box><size>0.5 0.5 0.5</size></box></geometry><material><ambient>0.7 0.5 0.3 1</ambient><diffuse>0.7 0.5 0.3 1</diffuse></material></visual>
+        <collision name='cb1'><pose>1.5 3 0.675 0 0 0</pose><geometry><box><size>0.5 0.5 0.5</size></box></geometry></collision>
+        <visual name='b2'><pose>0 4.5 0.25 0 0 0</pose><geometry><box><size>0.5 0.5 0.5</size></box></geometry><material><ambient>0.7 0.5 0.3 1</ambient><diffuse>0.7 0.5 0.3 1</diffuse></material></visual>
+        <collision name='cb2'><pose>0 4.5 0.25 0 0 0</pose><geometry><box><size>0.5 0.5 0.5</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <!-- OBSTÁCULOS EN CUARTO 3 (Naranja) -->
+    <model name='room3_items'>
+      <static>true</static>
+      <link name='r3_link'>
+        <visual name='top_front'><pose>6.5 4 0.95 0 0 0</pose><geometry><box><size>2.0 0.2 0.1</size></box></geometry><material><ambient>0.8 0.6 0.4 1</ambient><diffuse>0.8 0.6 0.4 1</diffuse></material></visual>
+        <visual name='top_back'><pose>6.5 3.1 0.95 0 0 0</pose><geometry><box><size>2.0 0.2 0.1</size></box></geometry><material><ambient>0.8 0.6 0.4 1</ambient><diffuse>0.8 0.6 0.4 1</diffuse></material></visual>
+        <visual name='top_left'><pose>5.6 3.55 0.95 0 0 0</pose><geometry><box><size>0.2 0.7 0.1</size></box></geometry><material><ambient>0.8 0.6 0.4 1</ambient><diffuse>0.8 0.6 0.4 1</diffuse></material></visual>
+        <visual name='top_right'><pose>7.4 3.55 0.95 0 0 0</pose><geometry><box><size>0.2 0.7 0.1</size></box></geometry><material><ambient>0.8 0.6 0.4 1</ambient><diffuse>0.8 0.6 0.4 1</diffuse></material></visual>
+        <collision name='ctf'><pose>6.5 4 0.95 0 0 0</pose><geometry><box><size>2.0 0.2 0.1</size></box></geometry></collision>
+        <collision name='ctb'><pose>6.5 3.1 0.95 0 0 0</pose><geometry><box><size>2.0 0.2 0.1</size></box></geometry></collision>
+        
+        <visual name='c1s'><pose>6.5 1.5 0.25 0 0 0</pose><geometry><box><size>2 0.5 0.5</size></box></geometry><material><ambient>0.2 0.2 0.8 1</ambient><diffuse>0.2 0.2 0.8 1</diffuse></material></visual>
+        <collision name='cc'><pose>6.5 1.5 0.25 0 0 0</pose><geometry><box><size>2 0.5 0.5</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <!-- OBSTÁCULOS EN EL PASILLO (Bancas Azules) -->
+    <model name='hallway_items'>
+      <static>true</static>
+      <link name='hall_link'>
+        <visual name='bench1'><pose>-6 -1 0.25 0 0 0</pose><geometry><box><size>1.5 0.5 0.5</size></box></geometry><material><ambient>0.2 0.4 0.8 1</ambient><diffuse>0.2 0.4 0.8 1</diffuse></material></visual>
+        <collision name='cbench1'><pose>-6 -1 0.25 0 0 0</pose><geometry><box><size>1.5 0.5 0.5</size></box></geometry></collision>
+        
+        <visual name='bench2'><pose>4 -1 0.25 0 0 0</pose><geometry><box><size>1.5 0.5 0.5</size></box></geometry><material><ambient>0.2 0.4 0.8 1</ambient><diffuse>0.2 0.4 0.8 1</diffuse></material></visual>
+        <collision name='cbench2'><pose>4 -1 0.25 0 0 0</pose><geometry><box><size>1.5 0.5 0.5</size></box></geometry></collision>
+      </link>
+    </model>
+
+  </world>
+</sdf>

@@ -1,0 +1,266 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- =============== DiffDrive =============== -->
+    <gazebo>
+        <plugin filename="libignition-gazebo-diff-drive-system.so" name="ignition::gazebo::systems::DiffDrive">
+            <!-- Ruedas izquierdas -->
+            <left_joint>llanta_iz_del_joint</left_joint>
+            <left_joint>llanta_iz_tra_joint</left_joint>
+            <!-- Ruedas derechas -->
+            <right_joint>llanta_dere_del_joint</right_joint>
+            <right_joint>llanta_dere_tra_joint</right_joint>
+
+            <wheel_separation>0.22</wheel_separation>
+            <wheel_radius>0.032045</wheel_radius>
+        
+            <!-- Nombres de tópicos corregidos para Ignition -->
+            <topic>cmd_vel</topic>
+            <odom_topic>model/tetrabot/odometry</odom_topic>
+            <tf_topic>model/tetrabot/tf</tf_topic>
+            
+            <!-- Coincidiendo con tu Launch prefix -->
+            <frame_id>tetrabot/odom</frame_id>
+            <child_frame_id>tetrabot/base_footprint</child_frame_id>
+            
+            <odom_publisher_frequency>30</odom_publisher_frequency>
+            <max_linear_acceleration>0.25</max_linear_acceleration>
+            <max_angular_acceleration>0.4</max_angular_acceleration>
+        </plugin>
+    </gazebo>
+
+    <!-- Publicador de estados de las juntas (para que giren en RViz) -->
+    <gazebo>
+        <plugin filename="libignition-gazebo-joint-state-publisher-system.so" name="ignition::gazebo::systems::JointStatePublisher">
+            <joint_name>llanta_dere_del_joint</joint_name>
+            <joint_name>llanta_dere_tra_joint</joint_name>
+            <joint_name>llanta_iz_del_joint</joint_name>
+            <joint_name>llanta_iz_tra_joint</joint_name> 
+        </plugin>
+    </gazebo>
+
+    
+
+<!-- IF USING SENSORS MUST INCLUDE THE BELOW -->
+    <gazebo>
+        <plugin filename="libignition-gazebo-sensors-system.so" name="ignition::gazebo::systems::Sensors">
+            <render_engine>ogre2</render_engine>
+        </plugin>
+    </gazebo>
+
+
+
+
+<!-- =========== Lidar Sensor ============ -->
+    <gazebo reference="lidar_link">
+        <sensor name='gpu_lidar' type='gpu_lidar'>"
+            <pose relative_to='lidar_link'>0 0 0 0 0 0</pose>
+            <topic>scan</topic>
+            <update_rate>2</update_rate>
+            <always_on>1</always_on>
+            <visualize>1</visualize>
+            <lidar>
+                <scan>
+                    <horizontal>
+                        <samples>760</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-3.14159</min_angle>
+                        <max_angle>3.14159</max_angle>
+                    </horizontal>
+                    <!--<vertical> Not needed if not scanning vertically
+                        <samples>1</samples>
+                        <resolution>0.01</resolution>
+                        <min_angle>0</min_angle>
+                        <max_angle>0</max_angle>
+                    </vertical>-->
+                </scan>
+                <range>
+                    <min>0.08</min>
+                    <max>10.0</max>
+                    <resolution>0.01</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.001</stddev>
+                </noise>
+            </lidar>
+        </sensor>
+    </gazebo>
+<!--=========================================-->
+
+<!-- =========== Camera Sensor ============ -->
+    <gazebo reference="camara_link">
+        <sensor name="camera" type="camera">
+            <camera>
+                <horizontal_fov>1.3962634</horizontal_fov>
+                <image>
+                    <width>320</width>
+                    <height>240</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>15</far>
+                </clip>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.007</stddev>
+                </noise>
+                <optical_frame_id>camera_optical_link</optical_frame_id>
+                <camera_info_topic>camera/camera_info</camera_info_topic>
+            </camera>
+            <always_on>1</always_on>
+            <update_rate>10</update_rate>
+            <visualize>false</visualize>
+            <topic>camera/image_raw</topic>
+        </sensor>
+    </gazebo>
+<!--=========================================-->
+
+<gazebo reference="faro_delantero_link">
+  <visual>
+    <material>
+      <ambient>1 1 0 1</ambient>
+      <diffuse>1 1 0 1</diffuse>
+      <specular>1 1 1 1</specular>
+      <emissive>1 1 0 1</emissive> <!-- Esto hace que el faro brille en la simulación -->
+    </material>
+  </visual>
+  <!-- Luz puntual que emite el faro -->
+  <light name="faro_luz" type="spot">
+    <pose>0 0 0 0 0 0</pose>
+    <diffuse>1 1 1 1</diffuse>
+    <specular>.1 .1 .1 1</specular>
+    <attenuation>
+      <range>10</range>
+      <constant>0.5</constant>
+      <linear>0.01</linear>
+      <quadratic>0.001</quadratic>
+    </attenuation>
+    <direction>1 0 0</direction> <!-- Hacia adelante -->
+    <spot>
+      <inner_angle>0.1</inner_angle>
+      <outer_angle>0.5</outer_angle>
+      <falloff>1.2</falloff>
+    </spot>
+    <cast_shadows>true</cast_shadows>
+  </light>
+</gazebo>
+
+
+<gazebo reference="faro_trasero_link">
+    <visual>
+      <material>
+        <ambient>1 0 0 1</ambient>
+        <diffuse>1 0 0 1</diffuse>
+        <specular>1 1 1 1</specular>
+        <emissive>1 0 0 1</emissive> </material>
+    </visual>
+    
+    <light name="faro_trasero_luz" type="spot">
+      <pose>0 0 0 0 0 0</pose>
+      <diffuse>1 0 0 1</diffuse> <specular>.1 .1 .1 1</specular>
+      <attenuation>
+        <range>10</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-1 0 0</direction> 
+      <spot>
+        <inner_angle>0.1</inner_angle>
+        <outer_angle>0.5</outer_angle>
+        <falloff>1.2</falloff>
+      </spot>
+      <cast_shadows>true</cast_shadows>
+    </light>
+  </gazebo>
+
+
+
+<!-- CONFIGURACIÓN GAZEBO PARA SENSORES ULTRASÓNICOS -->
+
+ <gazebo reference="ultrasonico_dere_link">
+    <sensor type="gpu_lidar" name="ultrasonico_der">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+      <topic>/ultrasonico/der</topic>
+      <ignition_frame_id>tetrabot/ultrasonico_dere_link</ignition_frame_id>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>5</samples>
+            <resolution>1</resolution>
+            <min_angle>-0.13</min_angle>
+            <max_angle>0.13</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>5</samples>
+            <resolution>1</resolution>
+            <min_angle>-0.01</min_angle>
+            <max_angle>0.01</max_angle>
+          </vertical>
+        </scan>
+        <range>
+          <min>0.02</min>
+          <max>4.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="ultrasonico_iz_link">
+    <sensor type="gpu_lidar" name="ultrasonico_iz">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+      <topic>/ultrasonico/iz</topic>
+      <ignition_frame_id>tetrabot/ultrasonico_iz_link</ignition_frame_id>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>5</samples>
+            <resolution>1</resolution>
+            <min_angle>-0.13</min_angle>
+            <max_angle>0.13</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.02</min>
+          <max>4.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="ultrasonico_tra_link">
+    <sensor type="gpu_lidar" name="ultrasonico_tra">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+      <topic>/ultrasonico/tra</topic>
+      <ignition_frame_id>tetrabot/ultrasonico_tra_link</ignition_frame_id>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>5</samples>
+            <resolution>1</resolution>
+            <min_angle>-0.13</min_angle>
+            <max_angle>0.13</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.02</min>
+          <max>4.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+    </sensor>
+  </gazebo>
+
+</robot> 
