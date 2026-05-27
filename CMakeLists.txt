@@ -24,6 +24,7 @@ install(
     scripts/plot_movimiento.py
     scripts/cinematica_directa.py
     scripts/plot_esfuerzo.py
+    scripts/atencion.py
     
   DESTINATION lib/${PROJECT_NAME}
 )
