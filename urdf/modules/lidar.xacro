@@ -3,7 +3,9 @@
 <!-- Onshape document_id: 3023829f8e4e5c564f6b4985 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<!-- Link lidar_link -->
+
+
+  <!-- Link lidar_link -->
   <link name="lidar_link">
     <inertial>
       <origin xyz="-0 0 -0.00994579" rpy="0 0 0"/>
@@ -35,5 +37,5 @@
     <axis xyz="0 0 1"/>
     <limit effort="100" velocity="100"/>
   </joint>
-  
+
 </robot>

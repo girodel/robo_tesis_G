@@ -1,30 +1,34 @@
 <?xml version="1.0" ?>
+<!-- Generated using onshape-to-robot -->
+<!-- Onshape document_id: 3023829f8e4e5c564f6b4985 -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+<!-- Link camara_link -->
   <link name="camara_link">
     <inertial>
-      <origin xyz="-0 0 -0.00516528" rpy="0 0 0"/>
-      <mass value="0.0399941"/>
-      <inertia ixx="6.59521e-06" ixy="0" ixz="0" iyy="6.59521e-06" iyz="0" izz="1.04207e-05"/>
+      <origin xyz="3.9793e-08 -2.2226e-08 -0.00553286" rpy="0 0 0"/>
+      <mass value="0.0293384"/>
+      <inertia ixx="5.36338e-06" ixy="1.1e-11" ixz="-4e-12" iyy="5.36338e-06" iyz="4e-12" izz="8.08857e-06"/>
     </inertial>
+    <!-- Part camara_link -->
     <visual>
       <origin xyz="0 0 0.005" rpy="3.14159 -0 1.5708"/>
       <geometry>
-        <mesh filename="package://my_robot_description/assets/camara_t_s.stl"/>
+        <mesh filename="package://my_robot_description/assets/camara_link.stl"/>
       </geometry>
-      <material name="camara_t_s_material">
+      <material name="camara_link_material">
         <color rgba="0.262745 0.282353 0.301961 1"/>
       </material>
     </visual>
     <collision>
       <origin xyz="0 0 0.005" rpy="3.14159 -0 1.5708"/>
       <geometry>
-        <mesh filename="package://my_robot_description/assets/camara_t_s.stl"/>
+        <mesh filename="package://my_robot_description/assets/camara_link.stl"/>
       </geometry>
     </collision>
   </link>
-  
-  <joint name="camara" type="fixed">
+  <!-- Joint from base_link to camara_link -->
+  <joint name="camara_joint" type="fixed">
     <origin xyz="0.115 0 0.135" rpy="0 0 0"/>
     <parent link="base_link"/>
     <child link="camara_link"/>
@@ -32,34 +36,20 @@
     <limit effort="100" velocity="100"/>
   </joint>
 
+  <!--THIS IS A FIX TO CHANGE THE ORIENTATION SO IT WORKS WITH OPENCV (ALWAYS INCLUDE)
+  generate an optical frame 
+  http://www.ros.org/reps/rep-0103.html#suffix-frames
+  so that ros and opencv can operate on the camera frame correctly -->
   <link name="camera_optical_link">
   </link>
 
   <joint name="camera_optical_joint" type="fixed">
+      <!-- these values have to be these values otherwise the gazebo camera
+          image won't be aligned properly with the frame it is supposedly
+          originating from -->
       <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
       <parent link="camara_link"/>
       <child link="camera_optical_link"/>
   </joint>
-
-  <gazebo reference="camara_link">
-    <sensor name="depth_camera" type="rgbd_camera">
-      <always_on>true</always_on>
-      <update_rate>20.0</update_rate>
-      <topic>camera</topic>
-      <camera>
-        <horizontal_fov>1.047198</horizontal_fov>
-        <image>
-          <width>640</width>
-          <height>480</height>
-          <format>RGB_INT8</format>
-        </image>
-        <clip>
-          <near>0.05</near>
-          <far>8.0</far>
-        </clip>
-        <optical_frame_id>camera_optical_link</optical_frame_id>
-      </camera>
-    </sensor>
-  </gazebo>
 
 </robot>

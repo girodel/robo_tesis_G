@@ -167,17 +167,15 @@ def generate_launch_description():
         name='ros_gz_bridge',
         output='screen',
         arguments=[
+            
             '/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock',
             '/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan',
             '/camera/image_raw@sensor_msgs/msg/Image[ignition.msgs.Image',
             '/camera/camera_info@sensor_msgs/msg/CameraInfo[ignition.msgs.CameraInfo',
             f'/model/{robot_name}/odometry@nav_msgs/msg/Odometry[ignition.msgs.Odometry',
             f'/model/{robot_name}/tf@tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V',
-            '/cmd_vel@geometry_msgs/msg/Twist]ignition.msgs.Twist',
-            # --- PUENTES PARA ULTRASONICOS ---
-            '/ultrasonico/der@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan',
-            '/ultrasonico/iz@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan',
-            '/ultrasonico/tra@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan'
+            '/cmd_vel@geometry_msgs/msg/Twist]ignition.msgs.Twist'
+
         ],
         # 🔥 EL REMAPEO DE TF AQUÍ:
         remappings=[
