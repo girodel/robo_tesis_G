@@ -104,13 +104,13 @@ def generate_launch_description():
         parameters=[{'use_sim_time': use_sim_time}] 
     )
 
-    #Joint State Publisher GUI node
-    joint_state_publisher_gui_node = Node(
-        package='joint_state_publisher_gui',
-        executable='joint_state_publisher_gui',
-        name='joint_state_publisher_gui',# 🔥 AGREGA ESTA LÍNEA EXACTA AQUÍ para las llantas
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
+    # #Joint State Publisher GUI node
+    # joint_state_publisher_gui_node = Node(
+    #     package='joint_state_publisher_gui',
+    #     executable='joint_state_publisher_gui',
+    #     name='joint_state_publisher_gui',# 🔥 AGREGA ESTA LÍNEA EXACTA AQUÍ para las llantas
+    #     parameters=[{'use_sim_time': use_sim_time}]
+    # )
 
 # ========================================================= #
 
@@ -217,7 +217,7 @@ def generate_launch_description():
         footprint_to_base_node,       # <--- Agregado aquí
         lidar_tf_publisher_node,
         robot_state_publisher_node,
-        joint_state_publisher_gui_node,
+        #joint_state_publisher_gui_node,#
         gazebo_launch,
         spawn_entity_node,
         ros_gz_bridge,
