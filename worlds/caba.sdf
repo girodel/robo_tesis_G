@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='utf-8'?>
+<sdf version='1.9'>
+  <world name='hospital_carrion_world'>
+    <physics name='1ms' type='ignored'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <plugin name='gz::sim::systems::Physics' filename='ignition-gazebo-physics-system'/>
+    <plugin name='gz::sim::systems::UserCommands' filename='ignition-gazebo-user-commands-system'/>
+    <plugin name='gz::sim::systems::SceneBroadcaster' filename='ignition-gazebo-scene-broadcaster-system'/>
+    <plugin name='gz::sim::systems::Contact' filename='ignition-gazebo-contact-system'/>
+    <gravity>0 0 -9.8</gravity>
+    
+    <scene>
+      <ambient>0.5 0.5 0.5 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>true</shadows>
+    </scene>
+
+    <light name='sun' type='directional'>
+      <pose>0 0 10 0 0 0</pose>
+      <cast_shadows>true</cast_shadows>
+      <direction>-0.5 0.1 -0.9</direction>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+    </light>
+
+    <model name='ground_plane'>
+      <static>true</static>
+      <link name='link'>
+        <collision name='collision'><geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry></collision>
+        <visual name='visual'>
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material><ambient>0.8 0.8 0.8 1</ambient><diffuse>0.8 0.8 0.8 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name='u_shape_corridors'>
+      <static>true</static>
+      <link name='walls'>
+        <visual name='out_l'><pose>-6.1 0 1 0 0 0</pose><geometry><box><size>0.2 12.2 2</size></box></geometry><material><ambient>0.85 0.65 0.1 1</ambient><diffuse>0.85 0.65 0.1 1</diffuse></material></visual>
+        <collision name='cout_l'><pose>-6.1 0 1 0 0 0</pose><geometry><box><size>0.2 12.2 2</size></box></geometry></collision>
+        
+        <visual name='out_r'><pose>6.1 0 1 0 0 0</pose><geometry><box><size>0.2 12.2 2</size></box></geometry><material><ambient>0.85 0.65 0.1 1</ambient><diffuse>0.85 0.65 0.1 1</diffuse></material></visual>
+        <collision name='cout_r'><pose>6.1 0 1 0 0 0</pose><geometry><box><size>0.2 12.2 2</size></box></geometry></collision>
+
+        <visual name='out_b'><pose>0 -6.1 1 0 0 0</pose><geometry><box><size>12.4 0.2 2</size></box></geometry><material><ambient>0.85 0.65 0.1 1</ambient><diffuse>0.85 0.65 0.1 1</diffuse></material></visual>
+        <collision name='cout_b'><pose>0 -6.1 1 0 0 0</pose><geometry><box><size>12.4 0.2 2</size></box></geometry></collision>
+
+        <visual name='out_t_l'><pose>-5 6.1 1 0 0 0</pose><geometry><box><size>2.4 0.2 2</size></box></geometry><material><ambient>0.85 0.65 0.1 1</ambient><diffuse>0.85 0.65 0.1 1</diffuse></material></visual>
+        <collision name='cout_t_l'><pose>-5 6.1 1 0 0 0</pose><geometry><box><size>2.4 0.2 2</size></box></geometry></collision>
+        <visual name='out_t_r'><pose>5 6.1 1 0 0 0</pose><geometry><box><size>2.4 0.2 2</size></box></geometry><material><ambient>0.85 0.65 0.1 1</ambient><diffuse>0.85 0.65 0.1 1</diffuse></material></visual>
+        <collision name='cout_t_r'><pose>5 6.1 1 0 0 0</pose><geometry><box><size>2.4 0.2 2</size></box></geometry></collision>
+
+        <visual name='in_b'><pose>0 -3.9 1 0 0 0</pose><geometry><box><size>8 0.2 2</size></box></geometry><material><ambient>0.85 0.65 0.1 1</ambient><diffuse>0.85 0.65 0.1 1</diffuse></material></visual>
+        <collision name='cin_b'><pose>0 -3.9 1 0 0 0</pose><geometry><box><size>8 0.2 2</size></box></geometry></collision>
+
+        <visual name='in_l_low'><pose>-3.9 -2 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry><material><ambient>0.85 0.65 0.1 1</ambient><diffuse>0.85 0.65 0.1 1</diffuse></material></visual>
+        <collision name='cin_l_low'><pose>-3.9 -2 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></collision>
+        
+        <visual name='in_l_up'><pose>-3.9 4 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry><material><ambient>0.85 0.65 0.1 1</ambient><diffuse>0.85 0.65 0.1 1</diffuse></material></visual>
+        <collision name='cin_l_up'><pose>-3.9 4 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></collision>
+
+        <visual name='in_r_low'><pose>3.9 -2 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry><material><ambient>0.85 0.65 0.1 1</ambient><diffuse>0.85 0.65 0.1 1</diffuse></material></visual>
+        <collision name='cin_r_low'><pose>3.9 -2 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></collision>
+        
+        <visual name='in_r_up'><pose>3.9 4 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry><material><ambient>0.85 0.65 0.1 1</ambient><diffuse>0.85 0.65 0.1 1</diffuse></material></visual>
+        <collision name='cin_r_up'><pose>3.9 4 1 0 0 0</pose><geometry><box><size>0.2 4 2</size></box></geometry></collision>
+      </link>
+    </model>
+
+    <model name='elevated_center_room'>
+      <static>true</static>
+      <link name='center_link'>
+        <visual name='platform'><pose>0 1 0.15 0 0 0</pose><geometry><box><size>4 6 0.3</size></box></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material></visual>
+        <collision name='cplatform'><pose>0 1 0.15 0 0 0</pose><geometry><box><size>4 6 0.3</size></box></geometry></collision>
+
+        <visual name='ramp_left'><pose>-3 1 0.15 0 -0.1488 0</pose><geometry><box><size>2.022 2 0.05</size></box></geometry><material><ambient>0.9 0.4 0.1 1</ambient><diffuse>0.9 0.4 0.1 1</diffuse></material></visual>
+        <collision name='cramp_left'><pose>-3 1 0.15 0 -0.1488 0</pose><geometry><box><size>2.022 2 0.05</size></box></geometry></collision>
+
+        <visual name='ramp_right'><pose>3 1 0.15 0 0.1488 0</pose><geometry><box><size>2.022 2 0.05</size></box></geometry><material><ambient>0.9 0.4 0.1 1</ambient><diffuse>0.9 0.4 0.1 1</diffuse></material></visual>
+        <collision name='cramp_right'><pose>3 1 0.15 0 0.1488 0</pose><geometry><box><size>2.022 2 0.05</size></box></geometry></collision>
+
+        <visual name='cr_top'><pose>0 4.1 1.3 0 0 0</pose><geometry><box><size>4.4 0.2 2</size></box></geometry><material><ambient>0.2 0.8 0.2 1</ambient><diffuse>0.2 0.8 0.2 1</diffuse></material></visual>
+        <collision name='ccr_top'><pose>0 4.1 1.3 0 0 0</pose><geometry><box><size>4.4 0.2 2</size></box></geometry></collision>
+
+        <visual name='cr_bot'><pose>0 -2.1 1.3 0 0 0</pose><geometry><box><size>4.4 0.2 2</size></box></geometry><material><ambient>0.2 0.8 0.2 1</ambient><diffuse>0.2 0.8 0.2 1</diffuse></material></visual>
+        <collision name='ccr_bot'><pose>0 -2.1 1.3 0 0 0</pose><geometry><box><size>4.4 0.2 2</size></box></geometry></collision>
+
+        <visual name='cr_l_up'><pose>-2.1 3 1.3 0 0 0</pose><geometry><box><size>0.2 2 2</size></box></geometry><material><ambient>0.2 0.8 0.2 1</ambient><diffuse>0.2 0.8 0.2 1</diffuse></material></visual>
+        <collision name='ccr_l_up'><pose>-2.1 3 1.3 0 0 0</pose><geometry><box><size>0.2 2 2</size></box></geometry></collision>
+
+        <visual name='cr_l_low'><pose>-2.1 -1 1.3 0 0 0</pose><geometry><box><size>0.2 2 2</size></box></geometry><material><ambient>0.2 0.8 0.2 1</ambient><diffuse>0.2 0.8 0.2 1</diffuse></material></visual>
+        <collision name='ccr_l_low'><pose>-2.1 -1 1.3 0 0 0</pose><geometry><box><size>0.2 2 2</size></box></geometry></collision>
+
+        <visual name='cr_r_up'><pose>2.1 3 1.3 0 0 0</pose><geometry><box><size>0.2 2 2</size></box></geometry><material><ambient>0.2 0.8 0.2 1</ambient><diffuse>0.2 0.8 0.2 1</diffuse></material></visual>
+        <collision name='ccr_r_up'><pose>2.1 3 1.3 0 0 0</pose><geometry><box><size>0.2 2 2</size></box></geometry></collision>
+
+        <visual name='cr_r_low'><pose>2.1 -1 1.3 0 0 0</pose><geometry><box><size>0.2 2 2</size></box></geometry><material><ambient>0.2 0.8 0.2 1</ambient><diffuse>0.2 0.8 0.2 1</diffuse></material></visual>
+        <collision name='ccr_r_low'><pose>2.1 -1 1.3 0 0 0</pose><geometry><box><size>0.2 2 2</size></box></geometry></collision>
+        
+        <visual name='obstacle_box'><pose>0 1 0.8 0 0 0</pose><geometry><box><size>1 1 1</size></box></geometry><material><ambient>0.8 0.2 0.2 1</ambient><diffuse>0.8 0.2 0.2 1</diffuse></material></visual>
+        <collision name='cobstacle_box'><pose>0 1 0.8 0 0 0</pose><geometry><box><size>1 1 1</size></box></geometry></collision>
+      </link>
+    </model>
+
+  </world>
+</sdf>

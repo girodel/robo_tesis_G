@@ -10,7 +10,6 @@ import time
 def speak(text):
     """Función para que el robot hable usando espeak"""
     print(f"🤖 Robot dice: {text}")
-    # Instalación necesaria: sudo apt install espeak
     os.system(f'espeak -v es "{text}"')
 
 def print_happy_robot():
@@ -35,22 +34,27 @@ def print_happy_robot():
     print(robot_ascii)
     print("="*30 + "\n")
 
-def wait_for_g():
-    """Bloquea el script hasta que el usuario presione 'g' y Enter"""
-    print("\n⏸️  El robot está esperando confirmación para continuar.")
+def wait_for_web_signal():
+    """Bloquea el script hasta que se presione el botón en la web"""
+    print("\n⏸️  El robot está esperando confirmación desde el celular para continuar...")
+    flag_file = '/tmp/robot_continue'
+    
+    # Limpiamos la señal por si existía de antes
+    if os.path.exists(flag_file):
+        os.remove(flag_file)
+
+    # Espera infinita hasta que el servidor web cree el archivo
     while True:
-        entrada = input("👉 Presiona la letra 'g' y Enter para ir a la siguiente posición: ").strip().lower()
-        if entrada == 'g':
-            print("✅ Orden recibida. Avanzando...\n")
+        if os.path.exists(flag_file):
+            print("✅ ¡Orden web recibida! Avanzando...\n")
+            os.remove(flag_file) # Borramos la señal para la próxima parada
             break
-        else:
-            print("⚠️  Entrada no válida. Debes escribir la letra 'g' para continuar.")
+        time.sleep(0.5)
 
 def main():
     rclpy.init()
     nav = BasicNavigator()
 
-    # --- Configuración de las Salas (Almacén Actualizado) ---
     rooms = [
         {
             'name': 'Sala de espera farmacia',
@@ -64,15 +68,12 @@ def main():
             'x': -3.982675852552293, 'y': 2.4858608729289147,
             'qz': 0.47691072057509853, 'qw': -0.8789517419065397
         }
-       
     ]
 
-    # Esperar a que Nav2 esté completamente listo
     print("Esperando a que Nav2 se active...")
     nav.waitUntilNav2Active()
 
     for room in rooms:
-        # Crear mensaje de posición
         goal_pose = PoseStamped()
         goal_pose.header.frame_id = room['frame_id']
         goal_pose.header.stamp = nav.get_clock().now().to_msg()
@@ -86,26 +87,22 @@ def main():
         goal_pose.pose.orientation.z = room['qz']
         goal_pose.pose.orientation.w = room['qw']
 
-        print(f"🚀 Iniciando navegación hacia: {room['name']} (Frame: {room['frame_id']})")
+        print(f"🚀 Iniciando navegación hacia: {room['name']}")
         nav.goToPose(goal_pose)
 
-        # Monitorear hasta llegar
         while not nav.isTaskComplete():
             time.sleep(1)
 
-        # Verificar resultado
         result = nav.getResult()
         if result == TaskResult.SUCCEEDED:
             speak(f"He llegado a {room['name']}")
-            # Interrupción manual: Espera a que presiones 'g' antes de continuar
-            wait_for_g()
+            # Reemplazamos tu wait_for_g() por la espera web
+            wait_for_web_signal()
         else:
             print(f"❌ No se pudo llegar a {room['name']}")
 
     print("🏁 Todas las posiciones han sido visitadas.")
     speak("Misión completada con éxito.")
-    
-    # Imprimimos el robot sonriente en la terminal
     print_happy_robot()
 
     rclpy.shutdown()

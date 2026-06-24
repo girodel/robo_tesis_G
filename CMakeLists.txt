@@ -25,6 +25,11 @@ install(
     scripts/cinematica_directa.py
     scripts/plot_esfuerzo.py
     scripts/atencion.py
+    scripts/motor_comparison_node.py
+    scripts/motor_comparison_node_2.py
+    scripts/control_pid.py
+    scripts/motor_nodo.py
+    scripts/servidor.py
     
   DESTINATION lib/${PROJECT_NAME}
 )
