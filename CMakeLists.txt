@@ -30,6 +30,7 @@ install(
     scripts/control_pid.py
     scripts/motor_nodo.py
     scripts/servidor.py
+    scripts/pruebas.py
     
   DESTINATION lib/${PROJECT_NAME}
 )

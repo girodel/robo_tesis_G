@@ -3,6 +3,7 @@ from flask import Flask, render_template_string, request, redirect, url_for, ses
 import subprocess
 import socket
 import os
+import time
 
 app = Flask(__name__)
 app.secret_key = 'mi_llave_secreta_super_segura_para_el_robot'
@@ -66,7 +67,11 @@ PANEL_PAGE = """
         
         .btn-farmacia { background-color: #17a2b8; } 
         .btn-atencion1 { background-color: #fd7e14; }
-        .btn-tour { background-color: #6f42c1; } 
+        .btn-atencion2 { background-color: #e83e8c; }
+        .btn-atencion3 { background-color: #20c997; } 
+        .btn-almacen { background-color: #6610f2; }   
+        
+        .btn-tour { background-color: #343a40; margin-top: 15px;} 
         .btn-continuar { background-color: #007bff; margin-top: 20px;} 
         .btn-cerrar { background-color: #dc3545; margin-top: 20px;} 
         
@@ -83,15 +88,20 @@ PANEL_PAGE = """
     <a href="/logout"><button class="btn btn-logout">🔒 Salir</button></a>
     <h2>Control de Navegación</h2>
 
-    <!-- Simulador de Batería -->
     <div class="bateria-container">
         <div id="bateria-barra" class="bateria-barra">100% 🔋</div>
     </div>
     
     <div><strong>Destinos Directos:</strong></div>
-    <button class="btn btn-farmacia" onclick="irA('farmacia')">🏥 Ir solo a Farmacia</button>
+    <button class="btn btn-farmacia" onclick="irA('farmacia')">🏥 Ir a Farmacia</button>
     <br>
-    <button class="btn btn-atencion1" onclick="irA('atencion1')">🩺 Ir solo a Atención 1</button>
+    <button class="btn btn-atencion1" onclick="irA('atencion1')">🩺 Ir a Sala Espera 1</button>
+    <br>
+    <button class="btn btn-atencion2" onclick="irA('atencion2')">🩺 Ir a Sala Espera 2</button>
+    <br>
+    <button class="btn btn-atencion3" onclick="irA('atencion3')">🩺 Ir a Sala Espera 3</button>
+    <br>
+    <button class="btn btn-almacen" onclick="irA('almacen_farmacia')">📦 Ir al Almacén</button>
     
     <div class="seccion">
         <div><strong>Modo Trayectoria:</strong></div>
@@ -106,41 +116,39 @@ PANEL_PAGE = """
     <div id="status">Conexión Segura Activa. Esperando órdenes...</div>
 
     <script>
+        // --- MOTOR DE VOZ PARA EL CELULAR ---
+        function hablar(texto) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Evita que se acumulen voces
+                let msg = new SpeechSynthesisUtterance(texto);
+                msg.lang = "es-ES";
+                msg.rate = 1.0;
+                window.speechSynthesis.speak(msg);
+            }
+        }
+
         // --- LÓGICA DE BATERÍA ---
         let bateria = 100;
         let barraBateria = document.getElementById("bateria-barra");
         
-        // 50% de caída en 120 segundos = 1% cada 2.4 segundos (2400 ms)
         let intervaloBateria = setInterval(() => {
             if (bateria > 0) {
                 bateria--;
                 barraBateria.style.width = bateria + "%";
                 barraBateria.innerText = bateria + "% 🔋";
 
-                // Cambio de colores según el nivel
                 if (bateria <= 50 && bateria > 20) {
-                    barraBateria.style.backgroundColor = "#ffc107"; // Amarillo/Naranja
+                    barraBateria.style.backgroundColor = "#ffc107"; 
                     barraBateria.style.color = "black";
                 } else if (bateria <= 20) {
-                    barraBateria.style.backgroundColor = "#dc3545"; // Rojo
+                    barraBateria.style.backgroundColor = "#dc3545"; 
                     barraBateria.style.color = "white";
                 }
 
-                // Alerta al llegar a 20%
                 if (bateria === 20) {
                     document.getElementById("status").innerText = "⚠️ ADVERTENCIA: El robot requiere recargarse";
                     document.getElementById("status").style.color = "red";
-                    document.getElementById("status").style.borderColor = "red";
-                    
-                    // Síntesis de voz (Text-to-Speech)
-                    if ('speechSynthesis' in window) {
-                        let mensajeVoz = new SpeechSynthesisUtterance("El robot requiere recargarse");
-                        mensajeVoz.lang = "es-ES";
-                        mensajeVoz.rate = 1.0;
-                        window.speechSynthesis.speak(mensajeVoz);
-                    } else {
-                        alert("El robot requiere recargarse");
-                    }
+                    hablar("El robot requiere recargarse");
                 }
             } else {
                 clearInterval(intervaloBateria);
@@ -150,29 +158,45 @@ PANEL_PAGE = """
 
         // --- LÓGICA DE MOVIMIENTO ---
         function irA(sala) {
-            if (bateria === 0) return; // No mover si no hay batería
-            let mensaje = "";
-            if(sala === 'farmacia') mensaje = "🚀 Yendo a: Farmacia";
-            else if(sala === 'atencion1') mensaje = "🚀 Yendo a: Atención 1";
-            else mensaje = "🗺️ Iniciando recorrido completo (Farmacia -> Atención 1)";
+            if (bateria === 0) return;
+            let destino_texto = "";
+            if(sala === 'farmacia') destino_texto = "Farmacia";
+            else if(sala === 'atencion1') destino_texto = "Sala de Espera 1";
+            else if(sala === 'atencion2') destino_texto = "Sala de Espera 2";
+            else if(sala === 'atencion3') destino_texto = "Sala de Espera 3";
+            else if(sala === 'almacen_farmacia') destino_texto = "Almacén de Farmacia";
+            else destino_texto = "Recorrido Completo";
             
-            let statusEl = document.getElementById("status");
-            statusEl.innerText = mensaje;
-            statusEl.style.color = "#444";
-            statusEl.style.borderColor = "#ccc";
+            document.getElementById("status").innerText = "🚀 Yendo a: " + destino_texto;
+            hablar("Orden recibida. Me dirijo a " + destino_texto);
+            
             fetch('/ejecutar_ir_a/' + sala);
         }
 
         function continuar() {
             if (bateria === 0) return;
-            document.getElementById("status").innerText = "⏩ Orden enviada. Avanzando...";
+            document.getElementById("status").innerText = "⏩ Avanzando a la siguiente sala...";
+            hablar("Avanzando a la siguiente sala");
             fetch('/ejecutar_continuar');
         }
 
         function cerrar() {
-            document.getElementById("status").innerText = "🛑 Misión cancelada abruptamente.";
+            document.getElementById("status").innerText = "🛑 Frenando robot y cancelando misión...";
+            hablar("Misión cancelada. Deteniendo motores.");
             fetch('/ejecutar_cerrar');
         }
+
+        // --- VERIFICAR LLEGADA CONSTANTEMENTE ---
+        setInterval(() => {
+            fetch('/estado_robot')
+            .then(response => response.text())
+            .then(data => {
+                if (data.trim() !== "") {
+                    document.getElementById("status").innerText = "✅ " + data;
+                    hablar(data); // Hace que el celular diga el mensaje de llegada
+                }
+            }).catch(e => console.log(e));
+        }, 1500); // Consulta cada 1.5 segundos
     </script>
 </body>
 </html>
@@ -199,14 +223,32 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
+@app.route('/estado_robot')
+def estado_robot():
+    """Ruta que la web consulta para saber si el robot llegó a su destino"""
+    if not session.get('autenticado'): return "", 401
+    archivo_llegada = '/tmp/robot_llegada'
+    if os.path.exists(archivo_llegada):
+        with open(archivo_llegada, 'r') as f:
+            mensaje = f.read().strip()
+        os.remove(archivo_llegada) # Lo borramos para que no repita el audio
+        return mensaje
+    return ""
+
 @app.route('/ejecutar_ir_a/<sala>')
 def ejecutar_ir_a(sala):
     if not session.get('autenticado'): return "No autorizado", 401
     global proceso_nodo
     
+    with open('/tmp/robot_cancel', 'w') as f: f.write('stop')
+    time.sleep(1.0) 
+    
     if proceso_nodo:
         proceso_nodo.terminate()
         subprocess.run(["pkill", "-f", "atencion.py"])
+    
+    if os.path.exists('/tmp/robot_cancel'): os.remove('/tmp/robot_cancel')
+    if os.path.exists('/tmp/robot_llegada'): os.remove('/tmp/robot_llegada')
     
     with open('/tmp/robot_destino', 'w') as f:
         f.write(sala)
@@ -225,11 +267,8 @@ def continuar():
 @app.route('/ejecutar_cerrar')
 def cerrar():
     if not session.get('autenticado'): return "No autorizado", 401
-    global proceso_nodo
-    if proceso_nodo:
-        proceso_nodo.terminate()
-        proceso_nodo = None
-    subprocess.run(["pkill", "-f", "atencion.py"])
+    with open('/tmp/robot_cancel', 'w') as f:
+        f.write('stop')
     return "OK"
 
 if __name__ == '__main__':
