@@ -71,15 +71,18 @@ PANEL_PAGE = """
         .btn-atencion3 { background-color: #20c997; } 
         .btn-almacen { background-color: #6610f2; }   
         
-        .btn-tour { background-color: #343a40; margin-top: 15px;} 
-        .btn-continuar { background-color: #007bff; margin-top: 20px;} 
+        .btn-add { background-color: #ffc107; color: black; width: 40%; font-size: 14px; padding: 10px; margin: 4px; display: inline-block; }
+        .btn-start-route { background-color: #28a745; margin-top: 10px;}
+        .btn-clear-route { background-color: #6c757d; margin-top: 10px;}
+        
         .btn-cerrar { background-color: #dc3545; margin-top: 20px;} 
         
         .btn-logout { background-color: #6c757d; padding: 8px; font-size: 14px; width: auto; position: absolute; top: 10px; right: 10px; }
         #status { margin-top: 20px; font-size: 16px; font-weight: bold; color: #444; border: 1px solid #ccc; padding: 10px; background: white; border-radius: 8px; display: inline-block; width: 85%; max-width: 330px;}
         .seccion { margin-top: 15px; border-top: 2px dashed #ccc; padding-top: 15px; }
         
-        /* Estilos de la Batería */
+        .ruta-box { margin: 10px auto; padding: 10px; background: #e9ecef; border-radius: 5px; width: 85%; max-width: 330px; font-weight: bold; color: #333; min-height: 24px;}
+        
         .bateria-container { margin: 10px auto 20px auto; width: 85%; max-width: 350px; background: #e9ecef; border-radius: 10px; border: 2px solid #ccc; overflow: hidden; position: relative; height: 30px; }
         .bateria-barra { height: 100%; width: 100%; background-color: #28a745; transition: width 0.5s ease-in-out, background-color 0.5s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; white-space: nowrap; }
     </style>
@@ -93,21 +96,31 @@ PANEL_PAGE = """
     </div>
     
     <div><strong>Destinos Directos:</strong></div>
-    <button class="btn btn-farmacia" onclick="irA('farmacia')">🏥 Ir a Farmacia</button>
+    <button class="btn btn-farmacia" onclick="irA('farmacia', 'Farmacia')">🏥 Ir a Farmacia</button>
     <br>
-    <button class="btn btn-atencion1" onclick="irA('atencion1')">🩺 Ir a Sala Espera 1</button>
+    <button class="btn btn-atencion1" onclick="irA('atencion1', 'Sala Espera 1')">🩺 Ir a Sala Espera 1</button>
     <br>
-    <button class="btn btn-atencion2" onclick="irA('atencion2')">🩺 Ir a Sala Espera 2</button>
+    <button class="btn btn-atencion2" onclick="irA('atencion2', 'Sala Espera 2')">🩺 Ir a Sala Espera 2</button>
     <br>
-    <button class="btn btn-atencion3" onclick="irA('atencion3')">🩺 Ir a Sala Espera 3</button>
+    <button class="btn btn-atencion3" onclick="irA('atencion3', 'Sala Espera 3')">🩺 Ir a Sala Espera 3</button>
     <br>
-    <button class="btn btn-almacen" onclick="irA('almacen_farmacia')">📦 Ir al Almacén</button>
+    <button class="btn btn-almacen" onclick="irA('almacen_farmacia', 'Almacén de Farmacia')">📦 Ir al Almacén</button>
     
     <div class="seccion">
-        <div><strong>Modo Trayectoria:</strong></div>
-        <button class="btn btn-tour" onclick="irA('recorrido')">🗺️ INICIAR RECORRIDO COMPLETO</button>
+        <div><strong>Ruta Personalizada:</strong></div>
+        <div class="ruta-box" id="ruta-display">📍 (Ruta vacía)</div>
+        
+        <div>
+            <button class="btn btn-add" onclick="agregarARuta('farmacia', 'Farmacia')">+ Farmacia</button>
+            <button class="btn btn-add" onclick="agregarARuta('atencion1', 'Sala 1')">+ Sala 1</button>
+            <button class="btn btn-add" onclick="agregarARuta('atencion2', 'Sala 2')">+ Sala 2</button>
+            <button class="btn btn-add" onclick="agregarARuta('atencion3', 'Sala 3')">+ Sala 3</button>
+            <button class="btn btn-add" onclick="agregarARuta('almacen_farmacia', 'Almacén')">+ Almacén</button>
+        </div>
+        
+        <button class="btn btn-start-route" onclick="iniciarRutaPersonalizada()">▶️ INICIAR RUTA</button>
         <br>
-        <button class="btn btn-continuar" onclick="continuar()">⏩ CONTINUAR A SIGUIENTE SALA</button>
+        <button class="btn btn-clear-route" onclick="limpiarRuta()">🗑️ LIMPIAR RUTA</button>
     </div>
     
     <button class="btn btn-cerrar" onclick="cerrar()">■ DETENER ROBOT / CANCELAR</button>
@@ -119,7 +132,7 @@ PANEL_PAGE = """
         // --- MOTOR DE VOZ PARA EL CELULAR ---
         function hablar(texto) {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Evita que se acumulen voces
+                window.speechSynthesis.cancel(); 
                 let msg = new SpeechSynthesisUtterance(texto);
                 msg.lang = "es-ES";
                 msg.rate = 1.0;
@@ -131,6 +144,7 @@ PANEL_PAGE = """
         let bateria = 100;
         let barraBateria = document.getElementById("bateria-barra");
         
+        // 100% de caída en 360 segundos (6 minutos) = 1% cada 3.6 segundos (3600 ms)
         let intervaloBateria = setInterval(() => {
             if (bateria > 0) {
                 bateria--;
@@ -140,7 +154,7 @@ PANEL_PAGE = """
                 if (bateria <= 50 && bateria > 20) {
                     barraBateria.style.backgroundColor = "#ffc107"; 
                     barraBateria.style.color = "black";
-                } else if (bateria <= 20) {
+                } else if (bateria <= 20 && bateria > 0) {
                     barraBateria.style.backgroundColor = "#dc3545"; 
                     barraBateria.style.color = "white";
                 }
@@ -150,34 +164,65 @@ PANEL_PAGE = """
                     document.getElementById("status").style.color = "red";
                     hablar("El robot requiere recargarse");
                 }
-            } else {
-                clearInterval(intervaloBateria);
-                document.getElementById("status").innerText = "🛑 Batería agotada. Robot apagado.";
+                
+                // CERO ABSOLUTO: Frenado forzoso
+                if (bateria === 0) {
+                    clearInterval(intervaloBateria);
+                    document.getElementById("status").innerText = "🛑 Batería agotada. Motores apagados.";
+                    document.getElementById("status").style.color = "white";
+                    document.getElementById("status").style.backgroundColor = "black";
+                    hablar("Batería agotada. Motores apagados.");
+                    fetch('/ejecutar_cerrar'); // Manda a frenar a ROS 2 inmediatamente
+                }
             }
-        }, 2400);
+        }, 3600); // 3600 ms = 3.6 segundos por 1% -> 360 segundos (6 minutos total)
 
-        // --- LÓGICA DE MOVIMIENTO ---
-        function irA(sala) {
-            if (bateria === 0) return;
-            let destino_texto = "";
-            if(sala === 'farmacia') destino_texto = "Farmacia";
-            else if(sala === 'atencion1') destino_texto = "Sala de Espera 1";
-            else if(sala === 'atencion2') destino_texto = "Sala de Espera 2";
-            else if(sala === 'atencion3') destino_texto = "Sala de Espera 3";
-            else if(sala === 'almacen_farmacia') destino_texto = "Almacén de Farmacia";
-            else destino_texto = "Recorrido Completo";
-            
-            document.getElementById("status").innerText = "🚀 Yendo a: " + destino_texto;
-            hablar("Orden recibida. Me dirijo a " + destino_texto);
-            
-            fetch('/ejecutar_ir_a/' + sala);
+        // --- LÓGICA DE RUTA PERSONALIZADA ---
+        let ids_ruta = [];
+        let nombres_ruta = [];
+
+        function agregarARuta(id, nombre) {
+            ids_ruta.push(id);
+            nombres_ruta.push(nombre);
+            document.getElementById("ruta-display").innerText = "📍 " + nombres_ruta.join(" ➔ ");
         }
 
-        function continuar() {
-            if (bateria === 0) return;
-            document.getElementById("status").innerText = "⏩ Avanzando a la siguiente sala...";
-            hablar("Avanzando a la siguiente sala");
-            fetch('/ejecutar_continuar');
+        function limpiarRuta() {
+            ids_ruta = [];
+            nombres_ruta = [];
+            document.getElementById("ruta-display").innerText = "📍 (Ruta vacía)";
+        }
+
+        function iniciarRutaPersonalizada() {
+            if (bateria <= 0) {
+                alert("⛔ Batería agotada. Recargue el robot para continuar.");
+                return;
+            }
+            if (ids_ruta.length === 0) {
+                alert("Primero agrega salas a tu ruta.");
+                return;
+            }
+            let destino_texto = nombres_ruta.join(", luego a ");
+            let destino_codigos = ids_ruta.join(",");
+            
+            document.getElementById("status").innerText = "🚀 Ejecutando ruta: " + nombres_ruta.join(" ➔ ");
+            hablar("Iniciando ruta personalizada. Me dirijo a " + destino_texto);
+            
+            fetch('/ejecutar_ir_a/' + destino_codigos);
+            limpiarRuta();
+        }
+
+        // --- LÓGICA DE MOVIMIENTO DIRECTO ---
+        function irA(sala, nombre) {
+            if (bateria <= 0) {
+                alert("⛔ Batería agotada. Recargue el robot para continuar.");
+                return;
+            }
+            
+            document.getElementById("status").innerText = "🚀 Yendo a: " + nombre;
+            hablar("Orden recibida. Me dirijo a " + nombre);
+            
+            fetch('/ejecutar_ir_a/' + sala);
         }
 
         function cerrar() {
@@ -193,10 +238,10 @@ PANEL_PAGE = """
             .then(data => {
                 if (data.trim() !== "") {
                     document.getElementById("status").innerText = "✅ " + data;
-                    hablar(data); // Hace que el celular diga el mensaje de llegada
+                    hablar(data); 
                 }
             }).catch(e => console.log(e));
-        }, 1500); // Consulta cada 1.5 segundos
+        }, 1500);
     </script>
 </body>
 </html>
@@ -225,13 +270,12 @@ def logout():
 
 @app.route('/estado_robot')
 def estado_robot():
-    """Ruta que la web consulta para saber si el robot llegó a su destino"""
     if not session.get('autenticado'): return "", 401
     archivo_llegada = '/tmp/robot_llegada'
     if os.path.exists(archivo_llegada):
         with open(archivo_llegada, 'r') as f:
             mensaje = f.read().strip()
-        os.remove(archivo_llegada) # Lo borramos para que no repita el audio
+        os.remove(archivo_llegada) 
         return mensaje
     return ""
 
@@ -240,28 +284,29 @@ def ejecutar_ir_a(sala):
     if not session.get('autenticado'): return "No autorizado", 401
     global proceso_nodo
     
-    with open('/tmp/robot_cancel', 'w') as f: f.write('stop')
-    time.sleep(1.0) 
+    # 1. Enviar señal de cancelación a atencion.py
+    with open('/tmp/robot_cancel', 'w') as f: 
+        f.write('stop')
     
+    # 2. Esperar 2.5 segundos. Esto le da tiempo al robot de detenerse por completo
+    # y al script anterior de desconectarse sin crashear a Nav2 ni perder su ubicación
+    time.sleep(2.5) 
+    
+    # 3. Limpieza forzada por si se quedó colgado (ya no debería ser necesario, pero es un seguro)
     if proceso_nodo:
         proceso_nodo.terminate()
         subprocess.run(["pkill", "-f", "atencion.py"])
+        proceso_nodo = None
     
     if os.path.exists('/tmp/robot_cancel'): os.remove('/tmp/robot_cancel')
     if os.path.exists('/tmp/robot_llegada'): os.remove('/tmp/robot_llegada')
     
+    # 4. Iniciar la nueva ruta desde donde se quedó
     with open('/tmp/robot_destino', 'w') as f:
         f.write(sala)
         
     comando = ["ros2", "run", "my_robot_description", "atencion.py"]
     proceso_nodo = subprocess.Popen(comando)
-    return "OK"
-
-@app.route('/ejecutar_continuar')
-def continuar():
-    if not session.get('autenticado'): return "No autorizado", 401
-    with open('/tmp/robot_continue', 'w') as f:
-        f.write('go')
     return "OK"
 
 @app.route('/ejecutar_cerrar')

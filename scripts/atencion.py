@@ -33,26 +33,6 @@ def print_happy_robot():
     print(robot_ascii)
     print("="*30 + "\n")
 
-def wait_for_web_signal(nav):
-    print("\n⏸️  Modo Recorrido: Esperando confirmación desde el celular para ir a la siguiente sala...")
-    flag_file = '/tmp/robot_continue'
-    cancel_file = '/tmp/robot_cancel'
-    
-    if os.path.exists(flag_file):
-        os.remove(flag_file)
-
-    while True:
-        if os.path.exists(cancel_file):
-            print("🛑 Cancelación recibida mientras se esperaba. Abortando.")
-            os.remove(cancel_file)
-            sys.exit(0)
-            
-        if os.path.exists(flag_file):
-            print("✅ ¡Orden web recibida! Avanzando...\n")
-            os.remove(flag_file)
-            break
-        time.sleep(0.5)
-
 def main():
     destino_archivo = '/tmp/robot_destino'
     cancel_file = '/tmp/robot_cancel'
@@ -101,24 +81,18 @@ def main():
     }
 
     lugares_a_visitar = []
-    if modo_solicitado == 'farmacia':
-        lugares_a_visitar.append(mapa_salas['farmacia'])
-    elif modo_solicitado == 'atencion1':
-        lugares_a_visitar.append(mapa_salas['atencion1'])
-    elif modo_solicitado == 'almacen_farmacia':
-        lugares_a_visitar.append(mapa_salas['almacen_farmacia'])
-    elif modo_solicitado == 'atencion2':
-        lugares_a_visitar.append(mapa_salas['atencion2'])
-    elif modo_solicitado == 'atencion3':
-        lugares_a_visitar.append(mapa_salas['atencion3'])
-    elif modo_solicitado == 'recorrido':
-        lugares_a_visitar.append(mapa_salas['farmacia'])
-        lugares_a_visitar.append(mapa_salas['atencion1'])
-        lugares_a_visitar.append(mapa_salas['almacen_farmacia'])
-        lugares_a_visitar.append(mapa_salas['atencion2'])
-        lugares_a_visitar.append(mapa_salas['atencion3'])
-    else:
-        print(f"❌ Error: Modo '{modo_solicitado}' no reconocido.")
+    
+    # Procesamiento de la ruta múltiple separada por comas
+    lista_ids = modo_solicitado.split(',')
+    for sala_id in lista_ids:
+        sala_id = sala_id.strip()
+        if sala_id in mapa_salas:
+            lugares_a_visitar.append(mapa_salas[sala_id])
+        else:
+            print(f"❌ Error: El destino '{sala_id}' no existe en el mapa.")
+
+    if not lugares_a_visitar:
+        print("❌ Error: Ningún destino válido proporcionado.")
         sys.exit(1)
 
     rclpy.init()
@@ -146,9 +120,20 @@ def main():
         while not nav.isTaskComplete():
             if os.path.exists(cancel_file):
                 print("\n🛑 Frenando motores...")
-                nav.cancelTask() 
+                nav.cancelTask()
+                
+                # ESPERAR a que Nav2 confirme que se canceló correctamente para no crashear AMCL
+                while not nav.isTaskComplete():
+                    time.sleep(0.1)
+                    
                 os.remove(cancel_file)
+                print("✅ Desconexión segura de Nav2.")
+                
+                # Cierre limpio de ROS 2
+                nav.destroy_node()
+                rclpy.shutdown()
                 sys.exit(0)
+                
             time.sleep(0.5)
 
         result = nav.getResult()
@@ -157,15 +142,16 @@ def main():
             print(f"✅ LLEGADA CONFIRMADA: {habitacion['name']}")
             print("="*60 + "\n")
             
-            # Escribir el mensaje para que Flask lo mande al celular
             texto_llegada = f"Misión cumplida. He llegado a {habitacion['name']}"
             with open('/tmp/robot_llegada', 'w') as f:
                 f.write(texto_llegada)
                 
-            speak(texto_llegada) # Sigue hablando en la PC si instalaste espeak
+            speak(texto_llegada)
             
-            if modo_solicitado == 'recorrido' and i < (len(lugares_a_visitar) - 1):
-                wait_for_web_signal(nav)
+            # Pausa de 2 segundos antes de ir a la siguiente sala de la ruta personalizada
+            if i < (len(lugares_a_visitar) - 1):
+                time.sleep(2.0)
+            
         elif result == TaskResult.CANCELED:
             print(f"⚠️ Misión cancelada a mitad de camino")
             break
@@ -178,7 +164,10 @@ def main():
     if not os.path.exists(cancel_file):
         print_happy_robot()
         
-    rclpy.shutdown()
+    # Solo si termina naturalmente
+    if rclpy.ok():
+        nav.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
